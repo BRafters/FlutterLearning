@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'question_handler.dart';
 
 void main() => runApp(Quizzler());
@@ -33,7 +34,6 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   QuestionHandler questions = QuestionHandler();
-  List<Icon> scoreKeeper = [];
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +76,10 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 // The user picked true.
                 setState(() {
-                  if(!questions.isEndOfQuiz()) {
-                    scoreKeeper.add(questions.checkIfCorrect(true));
+                  if (questions.isEndOfQuiz()) {
+                    displayResults().show();
+                  } else {
+                    questions.checkIfCorrect(true);
                     questions.nextQuestion();
                   }
                 });
@@ -102,8 +104,10 @@ class _QuizPageState extends State<QuizPage> {
               onPressed: () {
                 // The user picked false.
                 setState(() {
-                  if(!questions.isEndOfQuiz()) {
-                    scoreKeeper.add(questions.checkIfCorrect(false));
+                  if (questions.isEndOfQuiz()) {
+                    displayResults().show();
+                  } else {
+                    questions.checkIfCorrect(false);
                     questions.nextQuestion();
                   }
                 });
@@ -112,9 +116,14 @@ class _QuizPageState extends State<QuizPage> {
           ),
         ),
         Row(
-          children: scoreKeeper,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: questions.getScoreKeeper(),
         )
       ],
     );
+  }
+
+  Alert displayResults() {
+    
   }
 }
